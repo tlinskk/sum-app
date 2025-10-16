@@ -5,49 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sum Calculator Client</title>
     <style>
+        /* Базові стилі для всієї сторінки */
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; /* Включаємо Flexbox для центрування */
+            justify-content: center; /* Центруємо по горизонталі */
+            align-items: center; /* Центруємо по вертикалі */
+            min-height: 100vh; /* Займаємо всю висоту екрану */
+            margin: 0;
+            background-color: #f0f4f8; /* Приємний світло-сірий фон */
+            color: #333; /* Колір основного тексту */
+        }
+    
+        /* Стилізація головного контейнера (картки) */
+        .calculator-container {
+            background-color: #ffffff; /* Білий фон для картки */
+            padding: 30px 40px;
+            border-radius: 10px; /* Округлені кути */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Тінь для ефекту об'єму */
             text-align: center;
+            max-width: 400px;
+            width: 100%;
         }
-        input, button {
-            padding: 10px;
-            margin: 5px;
+    
+        h1 {
+            color: #0056b3; /* Темно-синій колір для заголовка */
+            margin-bottom: 25px;
+        }
+    
+        /* Стилізація полів вводу та їхніх підписів */
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+    
+        input {
+            width: 100%;
+            padding: 12px;
             font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Щоб padding не впливав на ширину */
         }
+    
+        /* Стилізація кнопки */
+        button {
+            background-color: #007bff; /* Яскравий синій колір */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer; /* Змінюємо курсор при наведенні */
+            transition: background-color 0.3s ease; /* Плавний перехід кольору */
+            width: 100%;
+            margin-top: 10px;
+        }
+    
+        /* Ефект при наведенні на кнопку */
+        button:hover {
+            background-color: #0056b3; /* Робимо колір темнішим */
+        }
+    
+        /* Стилізація результату */
         #result {
             margin-top: 20px;
             font-weight: bold;
+            font-size: 18px;
+            color: #28a745; /* Зелений колір для успішного результату */
         }
+    
         .error {
-            color: red;
+            color: #dc3545; /* Червоний колір для помилки */
         }
     </style>
 </head>
 <body>
-    <h1>Sum Calculator Service</h1>
-    <div>
-        <label for="numberA">Enter first number (a):</label>
-        <input type="number" id="numberA" placeholder="e.g., 1" required>
+    <div class="calculator-container">
+        <h1>Sum Calculator Service</h1>
+        <div class="input-group">
+            <label for="numberA">Enter first number (a):</label>
+            <input type="number" id="numberA" placeholder="e.g., 1" required>
+        </div>
+        <div class="input-group">
+            <label for="numberB">Enter second number (b):</label>
+            <input type="number" id="numberB" placeholder="e.g., 1" required>
+        </div>
+        <button onclick="calculateSum()">Calculate Sum</button>
+        <div id="result"></div>
     </div>
-    <div>
-        <label for="numberB">Enter second number (b):</label>
-        <input type="number" id="numberB" placeholder="e.g., 1" required>
-    </div>
-    <button onclick="calculateSum()">Calculate Sum</button>
-    <div id="result"></div>
 
     <script>
-        // Функция для отправки запроса к серверу и обработки ответа
+        // Ваш JavaScript код залишається без змін!
         async function calculateSum() {
-            // Получение значений из полей ввода
             const a = document.getElementById('numberA').value;
             const b = document.getElementById('numberB').value;
             const resultDiv = document.getElementById('result');
 
-            // Проверка, что оба поля заполнены
             if (a === '' || b === '') {
                 resultDiv.className = 'error';
                 resultDiv.textContent = 'Please enter both numbers';
@@ -55,26 +117,18 @@
             }
 
             try {
-                // Формирование URL с query-параметрами
-                //const url = `http://localhost:3000/sum?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`;
-                const url = `https://my-sum-server-123.onrender.com/sum?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`;
-                // Выполнение GET-запроса к серверу
+                const url = `https://my-sum-server-123.onrender.com/sum?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`; // Не забудьте перевірити, чи тут ваша адреса сервера
                 const response = await fetch(url);
-                // Парсинг ответа в формате JSON
                 const data = await response.json();
 
-                // Проверка успешности ответа
                 if (response.ok) {
-                    // Отображение результата
                     resultDiv.className = '';
                     resultDiv.textContent = `Sum of ${data.a} and ${data.b} is ${data.sum}`;
                 } else {
-                    // Отображение ошибки от сервера
                     resultDiv.className = 'error';
                     resultDiv.textContent = data.error || 'An error occurred';
                 }
             } catch (error) {
-                // Обработка ошибок сети или других проблем
                 resultDiv.className = 'error';
                 resultDiv.textContent = 'Failed to connect to the server';
             }
